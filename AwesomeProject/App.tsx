@@ -18,6 +18,7 @@ import {
   useColorScheme,
   View,
   TouchableOpacity,
+  Alert,
 } from 'react-native'
 
 import {
@@ -29,6 +30,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen'
 
 import { Camera } from 'expo-camera'
+let camera: Camera | null
 
 const Section: React.FC<{
   title: string
@@ -66,9 +68,24 @@ const App: React.FC = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   }
 
-  const __startCamera = () => {}
+  const __startCamera = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync()
+    if (status === 'granted') {
+      //! start camera
+      setStartCamera(true)
+    } else {
+      Alert.alert('Accesss denied')
+    }
+  }
 
-  return (
+  return startCamera ? (
+    <Camera
+      style={{ flex: 1, width: '100%' }}
+      ref={r => {
+        camera = r
+      }}
+    />
+  ) : (
     <SafeAreaView style={backgroundStyle}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
