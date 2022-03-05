@@ -8,7 +8,7 @@
  * @format
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import {
   SafeAreaView,
   ScrollView,
@@ -27,6 +27,8 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen'
+
+import { Camera } from 'expo-camera'
 
 const Section: React.FC<{
   title: string
@@ -56,12 +58,15 @@ const Section: React.FC<{
   )
 }
 
-const App = () => {
+const App: React.FC = () => {
   const isDarkMode = useColorScheme() === 'dark'
+  const [startCamera, setStartCamera] = useState<boolean>(false)
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   }
+
+  const __startCamera = () => {}
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -77,6 +82,7 @@ const App = () => {
             alignItems: 'center',
           }}>
           <TouchableOpacity
+            onPress={__startCamera}
             style={{
               width: 130,
               borderRadius: 4,
@@ -95,6 +101,12 @@ const App = () => {
               Take Picture
             </Text>
           </TouchableOpacity>
+          <Camera
+            style={{ flex: 1, width: '100%' }}
+            ref={r => {
+              camera = r
+            }}
+          />
           <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
         </View>
       </ScrollView>
