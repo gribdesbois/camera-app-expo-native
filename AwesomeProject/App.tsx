@@ -14,6 +14,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  ImageBackground,
   Text,
   useColorScheme,
   View,
@@ -32,9 +33,31 @@ import {
 import { Camera } from 'expo-camera'
 let camera: Camera | null
 
+const CameraPreview: React.FC = ({ photo }: any) => {
+  console.log('sdsfds', photo)
+  return (
+    <View
+      style={{
+        backgroundColor: 'transparent',
+        flex: 1,
+        width: '100%',
+        height: '100%',
+      }}>
+      <ImageBackground
+        source={{ uri: photo && photo.uri }}
+        style={{
+          flex: 1,
+        }}
+      />
+    </View>
+  )
+}
+
 const App: React.FC = () => {
   const isDarkMode = useColorScheme() === 'dark'
   const [startCamera, setStartCamera] = useState<boolean>(false)
+  const [previewVisible, setPreviewVisible] = useState<boolean>(false)
+  const [capturedImage, setCapturedImage] = useState<any>(null)
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -50,13 +73,67 @@ const App: React.FC = () => {
     }
   }
 
-  const __takePicture = () => {}
+  const __takePicture = async () => {
+    if (!camera) {
+      return
+    }
+    const photo = await camera.takePictureAsync()
+    console.log(photo)
+    setPreviewVisible(true)
+    setCapturedImage(photo)
+  }
 
   return (
     <View style={styles.container}>
       {startCamera ? (
         <>
           <View style={{ flex: 1, width: '100%' }} />
+          {previewVisible && capturedImage ? (
+            <CameraPreview photo={capturedImage} />
+          ) : (
+            <Camera
+              style={{ flex: 1 }}
+              ref={r => {
+                camera = r
+              }}>
+              <View
+                style={{
+                  flex: 1,
+                  width: '100%',
+                  backgroundColor: 'transparent',
+                  flexDirection: 'row',
+                }}>
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    flexDirection: 'row',
+                    flex: 1,
+                    width: '100%',
+                    padding: 20,
+                    justifyContent: 'space-between',
+                  }}>
+                  <View
+                    style={{
+                      alignSelf: 'center',
+                      flex: 1,
+                      alignItems: 'center',
+                    }}>
+                    <TouchableOpacity
+                      onPress={__takePicture}
+                      style={{
+                        width: 70,
+                        height: 70,
+                        bottom: 0,
+                        borderRadius: 50,
+                        backgroundColor: '#fff',
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+            </Camera>
+          )}
           <View
             style={{
               flex: 1,
@@ -87,78 +164,34 @@ const App: React.FC = () => {
           </View>
         </>
       ) : (
-        <Camera
-          style={{ flex: 1, width: '100%' }}
-          ref={r => {
-            camera = r
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#fff',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
-          <SafeAreaView style={backgroundStyle}>
-            <ScrollView
-              contentInsetAdjustmentBehavior="automatic"
-              style={backgroundStyle}>
-              <Header />
-              <View
-                style={{
-                  backgroundColor: isDarkMode ? Colors.black : Colors.white,
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <TouchableOpacity
-                  onPress={__startCamera}
-                  style={{
-                    width: 130,
-                    borderRadius: 4,
-                    backgroundColor: '#14274e',
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: 40,
-                  }}>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                    }}>
-                    Take Picture
-                  </Text>
-                </TouchableOpacity>
-                <StatusBar
-                  barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                />
-              </View>
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  flexDirection: 'row',
-                  flex: 1,
-                  width: '100%',
-                  padding: 20,
-                  justifyContent: 'space-between',
-                }}>
-                <View
-                  style={{
-                    alignSelf: 'center',
-                    flex: 1,
-                    alignItems: 'center',
-                  }}>
-                  <TouchableOpacity
-                    onPress={__takePicture}
-                    style={{
-                      width: 70,
-                      height: 70,
-                      bottom: 0,
-                      borderRadius: 50,
-                      backgroundColor: '#fff',
-                    }}
-                  />
-                </View>
-              </View>
-            </ScrollView>
-          </SafeAreaView>
-        </Camera>
+          <TouchableOpacity
+            onPress={__startCamera}
+            style={{
+              width: 130,
+              borderRadius: 4,
+              backgroundColor: '#14274e',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 40,
+            }}>
+            <Text
+              style={{
+                color: '#fff',
+                fontWeight: 'bold',
+                textAlign: 'center',
+              }}>
+              Take picture
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   )
