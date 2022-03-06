@@ -33,7 +33,7 @@ import {
 import { Camera } from 'expo-camera'
 let camera: Camera | null
 
-const CameraPreview = ({ photo }: any) => {
+const CameraPreview = ({ photo, retakePicture }: any) => {
   console.log('sdsfds', photo)
   return (
     <View
@@ -47,8 +47,39 @@ const CameraPreview = ({ photo }: any) => {
         source={{ uri: photo && photo.uri }}
         style={{
           flex: 1,
-        }}
-      />
+        }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            padding: 15,
+            justifyContent: 'flex-end',
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <TouchableOpacity
+              onPress={retakePicture}
+              style={{
+                width: 130,
+                height: 40,
+
+                alignItems: 'center',
+                borderRadius: 4,
+              }}>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 20,
+                }}>
+                Re-take
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ImageBackground>
     </View>
   )
 }
@@ -83,15 +114,29 @@ const App: React.FC = () => {
     setCapturedImage(photo)
   }
 
+  const __retakePicture = () => {
+    setCapturedImage(null)
+    setPreviewVisible(false)
+    __startCamera()
+  }
+
   return (
     <View style={styles.container}>
       {startCamera ? (
-        <>
-          <View style={{ flex: 1, width: '100%' }} />
+        <View
+          style={{
+            flex: 1,
+            width: '100%',
+          }}>
           {previewVisible && capturedImage ? (
-            <CameraPreview photo={capturedImage} />
+            <CameraPreview
+              photo={capturedImage}
+              retakePicture={__retakePicture}
+            />
           ) : (
             <Camera
+              /* type={cameraType} */
+
               style={{ flex: 1 }}
               ref={r => {
                 camera = r
@@ -103,6 +148,15 @@ const App: React.FC = () => {
                   backgroundColor: 'transparent',
                   flexDirection: 'row',
                 }}>
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: '5%',
+                    top: '10%',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                  }}
+                />
                 <View
                   style={{
                     position: 'absolute',
@@ -134,35 +188,7 @@ const App: React.FC = () => {
               </View>
             </Camera>
           )}
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#fff',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={__startCamera}
-              style={{
-                width: 130,
-                borderRadius: 4,
-                backgroundColor: '#14274e',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: 40,
-              }}>
-              <Text
-                style={{
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                Take picture
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
+        </View>
       ) : (
         <View
           style={{
