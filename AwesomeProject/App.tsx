@@ -93,6 +93,9 @@ const App: React.FC = () => {
   const [flashMode, setFlashMode] = useState<
     number | 'off' | 'auto' | 'on' | 'torch' | undefined
   >('off')
+  const [cameraType, setCameraType] = useState<
+    number | 'back' | 'front' | undefined
+  >(Camera.Constants.Type.back)
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -124,7 +127,23 @@ const App: React.FC = () => {
     __startCamera()
   }
 
-  const __handleFlashMode = () => {}
+  const __handleFlashMode = () => {
+    if (flashMode === 'on') {
+      setFlashMode('off')
+    } else if (flashMode === 'off') {
+      setFlashMode('on')
+    } else {
+      setFlashMode('auto')
+    }
+  }
+
+  const __switchCamera = () => {
+    if (cameraType === 'back') {
+      setCameraType('front')
+    } else {
+      setCameraType('back')
+    }
+  }
 
   const backgroundColor: string = flashMode === 'off' ? '#000' : '#fff'
 
@@ -143,7 +162,7 @@ const App: React.FC = () => {
             />
           ) : (
             <Camera
-              /* type={cameraType} */
+              type={cameraType}
               flashMode={flashMode}
               style={{ flex: 1 }}
               ref={r => {
@@ -167,8 +186,8 @@ const App: React.FC = () => {
                   <TouchableOpacity
                     onPress={__handleFlashMode}
                     style={{
-                      backgroundColor: `${backgroundColor}`,
-                      borderRadius: '50%',
+                      backgroundColor: flashMode === 'off' ? '#000' : '#fff',
+                      borderRadius: 50,
                       height: 25,
                       width: 25,
                     }}>
@@ -179,33 +198,48 @@ const App: React.FC = () => {
                       ⚡️
                     </Text>
                   </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={__switchCamera}
+                    style={{
+                      marginTop: 20,
+                      borderRadius: 50,
+                      height: 25,
+                      width: 25,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                      }}>
+                      {cameraType === 'front' ? '🤳' : '📷'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    flexDirection: 'row',
+                    flex: 1,
+                    width: '100%',
+                    padding: 20,
+                    justifyContent: 'space-between',
+                  }}>
                   <View
                     style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      flexDirection: 'row',
+                      alignSelf: 'center',
                       flex: 1,
-                      width: '100%',
-                      padding: 20,
-                      justifyContent: 'space-between',
+                      alignItems: 'center',
                     }}>
-                    <View
+                    <TouchableOpacity
+                      onPress={__takePicture}
                       style={{
-                        alignSelf: 'center',
-                        flex: 1,
-                        alignItems: 'center',
-                      }}>
-                      <TouchableOpacity
-                        onPress={__takePicture}
-                        style={{
-                          width: 70,
-                          height: 70,
-                          bottom: 0,
-                          borderRadius: 50,
-                          backgroundColor: '#fff',
-                        }}
-                      />
-                    </View>
+                        width: 70,
+                        height: 70,
+                        bottom: 0,
+                        borderRadius: 50,
+                        backgroundColor: '#fff',
+                      }}
+                    />
                   </View>
                 </View>
               </View>
