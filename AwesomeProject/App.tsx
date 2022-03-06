@@ -33,7 +33,7 @@ import {
 import { Camera } from 'expo-camera'
 let camera: Camera | null
 
-const CameraPreview: React.FC = ({ photo }: any) => {
+const CameraPreview = ({ photo }: any) => {
   console.log('sdsfds', photo)
   return (
     <View
