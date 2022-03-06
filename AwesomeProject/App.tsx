@@ -32,34 +32,6 @@ import {
 import { Camera } from 'expo-camera'
 let camera: Camera | null
 
-const Section: React.FC<{
-  title: string
-}> = ({ children, title }) => {
-  const isDarkMode = useColorScheme() === 'dark'
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  )
-}
-
 const App: React.FC = () => {
   const isDarkMode = useColorScheme() === 'dark'
   const [startCamera, setStartCamera] = useState<boolean>(false)
@@ -78,77 +50,96 @@ const App: React.FC = () => {
     }
   }
 
-  return startCamera ? (
-    <Camera
-      style={{ flex: 1, width: '100%' }}
-      ref={r => {
-        camera = r
-      }}
-    />
-  ) : (
-    <SafeAreaView style={backgroundStyle}>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity
-            onPress={__startCamera}
+  return (
+    <View style={styles.container}>
+      {startCamera ? (
+        <>
+          <View style={{ flex: 1, width: '100%' }} />
+          <View
             style={{
-              width: 130,
-              borderRadius: 4,
-              backgroundColor: '#14274e',
-              flexDirection: 'row',
+              flex: 1,
+              backgroundColor: '#fff',
               justifyContent: 'center',
               alignItems: 'center',
-              height: 40,
             }}>
-            <Text
+            <TouchableOpacity
+              onPress={__startCamera}
               style={{
-                color: '#fff',
-                fontWeight: 'bold',
-                textAlign: 'center',
+                width: 130,
+                borderRadius: 4,
+                backgroundColor: '#14274e',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 40,
               }}>
-              Take Picture
-            </Text>
-          </TouchableOpacity>
-          <Camera
-            style={{ flex: 1, width: '100%' }}
-            ref={r => {
-              camera = r
-            }}
-          />
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                }}>
+                Take picture
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        <SafeAreaView style={backgroundStyle}>
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={backgroundStyle}>
+            <Header />
+            <View
+              style={{
+                backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                onPress={__startCamera}
+                style={{
+                  width: 130,
+                  borderRadius: 4,
+                  backgroundColor: '#14274e',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: 40,
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Take Picture
+                </Text>
+              </TouchableOpacity>
+              <Camera
+                style={{ flex: 1, width: '100%' }}
+                ref={r => {
+                  camera = r
+                }}
+              />
+              <StatusBar
+                barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+              />
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      )}
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
+  container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
   },
 })
 
