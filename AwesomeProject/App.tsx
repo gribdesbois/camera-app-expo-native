@@ -33,7 +33,7 @@ import {
 import { Camera } from 'expo-camera'
 let camera: Camera | null
 
-const CameraPreview = ({ photo, retakePicture }: any) => {
+const CameraPreview = ({ photo, retakePicture, savePhoto }: any) => {
   console.log('sdsfds', photo)
   return (
     <View
@@ -89,6 +89,10 @@ const App: React.FC = () => {
   const [startCamera, setStartCamera] = useState<boolean>(false)
   const [previewVisible, setPreviewVisible] = useState<boolean>(false)
   const [capturedImage, setCapturedImage] = useState<any>(null)
+  // eslint-disable-next-line prettier/prettier
+  const [flashMode, setFlashMode] = useState<
+    number | 'off' | 'auto' | 'on' | 'torch' | undefined
+  >('off')
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -120,6 +124,10 @@ const App: React.FC = () => {
     __startCamera()
   }
 
+  const __handleFlashMode = () => {}
+
+  const backgroundColor: string = flashMode === 'off' ? '#000' : '#fff'
+
   return (
     <View style={styles.container}>
       {startCamera ? (
@@ -136,7 +144,7 @@ const App: React.FC = () => {
           ) : (
             <Camera
               /* type={cameraType} */
-
+              flashMode={flashMode}
               style={{ flex: 1 }}
               ref={r => {
                 camera = r
@@ -155,34 +163,49 @@ const App: React.FC = () => {
                     top: '10%',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                  }}
-                />
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    flexDirection: 'row',
-                    flex: 1,
-                    width: '100%',
-                    padding: 20,
-                    justifyContent: 'space-between',
                   }}>
+                  <TouchableOpacity
+                    onPress={__handleFlashMode}
+                    style={{
+                      backgroundColor: `${backgroundColor}`,
+                      borderRadius: '50%',
+                      height: 25,
+                      width: 25,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                      }}>
+                      ⚡️
+                    </Text>
+                  </TouchableOpacity>
                   <View
                     style={{
-                      alignSelf: 'center',
+                      position: 'absolute',
+                      bottom: 0,
+                      flexDirection: 'row',
                       flex: 1,
-                      alignItems: 'center',
+                      width: '100%',
+                      padding: 20,
+                      justifyContent: 'space-between',
                     }}>
-                    <TouchableOpacity
-                      onPress={__takePicture}
+                    <View
                       style={{
-                        width: 70,
-                        height: 70,
-                        bottom: 0,
-                        borderRadius: 50,
-                        backgroundColor: '#fff',
-                      }}
-                    />
+                        alignSelf: 'center',
+                        flex: 1,
+                        alignItems: 'center',
+                      }}>
+                      <TouchableOpacity
+                        onPress={__takePicture}
+                        style={{
+                          width: 70,
+                          height: 70,
+                          bottom: 0,
+                          borderRadius: 50,
+                          backgroundColor: '#fff',
+                        }}
+                      />
+                    </View>
                   </View>
                 </View>
               </View>
